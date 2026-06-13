@@ -1,0 +1,32 @@
+---
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarm:
+      - "6"
+      - "7"
+    ldflags:
+      - -s -w
+dockers:
+  - goos: linux
+    goarch: amd64
+    image_templates:
+      - "systemli/prometheus-dnssec-exporter:{{ .Tag }}"
+      - "systemli/prometheus-dnssec-exporter:{{ .Major }}"
+      - "systemli/prometheus-dnssec-exporter:{{ .Major }}.{{ .Minor }}"
+      - "systemli/prometheus-dnssec-exporter:latest"
+checksum:
+  name_template: "checksums.txt"
+snapshot:
+  version_template: "{{ .Tag }}-next"
+changelog:
+  disable: true
